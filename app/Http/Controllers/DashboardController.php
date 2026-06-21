@@ -65,7 +65,7 @@ class DashboardController extends Controller
 
             if ($request->file('avatar')) {
                 $validate['avatar'] = $request->file('avatar')->store('img', 'public');
-                if ($user->avatar) {
+                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
                     Storage::disk('public')->delete($user->avatar);
                 }
             }

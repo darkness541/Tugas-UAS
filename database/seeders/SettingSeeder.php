@@ -14,9 +14,11 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         Setting::create([
-            'app_name' => 'Admin Laravel',
-            'copyright' => 'Tamus Tahir | 2025',
-            'login_title' => 'Page Login',
+            'app_name' => 'NiceAdmin Laravel',
+            'copyright' => 'Tamus Tahir | 2026',
+            'login_title' => 'Halaman Login',
+            'keywords' => 'admin, dashboard, laravel, niceadmin, bootstrap',
+            'description' => 'Aplikasi dashboard admin menggunakan Laravel dan NiceAdmin template.',
         ]);
     }
 }

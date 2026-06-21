@@ -61,4 +61,15 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
         return redirect('/')->withSuccess('Logout berhasil');
     }
+
+    public function switchUser(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        Auth::loginUsingId($request->user_id);
+
+        return redirect()->back()->withSuccess('User berhasil diganti');
+    }
 }

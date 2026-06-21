@@ -35,30 +35,32 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            DB::beginTransaction();
 
-            $validate = $request->validate([
-                'name' => 'required',
-                'role' => 'required',
-                'password' => 'required|min:8',
-                'passwordconfirm' => 'required|same:password',
-                'email' => 'required|email|lowercase|unique:users,email',
-                'avatar' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:512'
-            ], [
-                'name.required' => 'Nama wajib diisi',
-                'role.required' => 'Role wajib diisi',
-                'password.required' => 'Password wajib diisi',
-                'password.min' => 'Password minimal 8 karakter',
-                'passwordconfirm.required' => 'Konfirmasi password wajib diisi',
-                'passwordconfirm.same' => 'Konfirmasi password tidak cocok',
-                'email.required' => 'Email wajib diisi',
-                'email.email' => 'Format email tidak valid',
-                'email.unique' => 'Email sudah terdaftar',
-                'avatar.image' => 'File avatar harus berupa gambar',
-                'avatar.mimes' => 'Format avatar harus png, jpg, jpeg, atau svg',
-                'avatar.max' => 'Ukuran avatar tidak boleh lebih dari 512 KB',
-            ]);
+        $validate = $request->validate([
+            'name' => 'required',
+            'role' => 'required',
+            'password' => 'required|min:8',
+            'passwordconfirm' => 'required|same:password',
+            'email' => 'required|email|lowercase|unique:users,email',
+            'avatar' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:512'
+        ], [
+            'name.required' => 'Nama wajib diisi',
+            'role.required' => 'Role wajib diisi',
+            'password.required' => 'Password wajib diisi',
+            'password.min' => 'Password minimal 8 karakter',
+            'passwordconfirm.required' => 'Konfirmasi password wajib diisi',
+            'passwordconfirm.same' => 'Konfirmasi password tidak cocok',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah terdaftar',
+            'avatar.image' => 'File avatar harus berupa gambar',
+            'avatar.mimes' => 'Format avatar harus png, jpg, jpeg, atau svg',
+            'avatar.max' => 'Ukuran avatar tidak boleh lebih dari 512 KB',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
 
             if ($request->file('avatar')) {
                 $validate['avatar'] = $request->file('avatar')->store('img', 'public');
@@ -103,32 +105,34 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        try {
-            DB::beginTransaction();
 
-            $validate = $request->validate([
-                'name' => 'required',
-                'role' => 'required',
-                'password' => 'nullable|min:8',
-                'passwordconfirm' => 'nullable|same:password',
-                'email' => 'required|email|lowercase|unique:users,email,' . $user->id,
-                'avatar' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:512'
-            ], [
-                'name.required' => 'Nama wajib diisi',
-                'role.required' => 'Role wajib diisi',
-                'password.min' => 'Password minimal 8 karakter',
-                'passwordconfirm.same' => 'Konfirmasi password tidak cocok',
-                'email.required' => 'Email wajib diisi',
-                'email.email' => 'Format email tidak valid',
-                'email.unique' => 'Email sudah terdaftar',
-                'avatar.image' => 'File avatar harus berupa gambar',
-                'avatar.mimes' => 'Format avatar harus png, jpg, jpeg, atau svg',
-                'avatar.max' => 'Ukuran avatar tidak boleh lebih dari 512 KB',
-            ]);
+        $validate = $request->validate([
+            'name' => 'required',
+            'role' => 'required',
+            'password' => 'nullable|min:8',
+            'passwordconfirm' => 'nullable|same:password',
+            'email' => 'required|email|lowercase|unique:users,email,' . $user->id,
+            'avatar' => 'nullable|image|mimes:png,jpg,jpeg,svg|max:512'
+        ], [
+            'name.required' => 'Nama wajib diisi',
+            'role.required' => 'Role wajib diisi',
+            'password.min' => 'Password minimal 8 karakter',
+            'passwordconfirm.same' => 'Konfirmasi password tidak cocok',
+            'email.required' => 'Email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email sudah terdaftar',
+            'avatar.image' => 'File avatar harus berupa gambar',
+            'avatar.mimes' => 'Format avatar harus png, jpg, jpeg, atau svg',
+            'avatar.max' => 'Ukuran avatar tidak boleh lebih dari 512 KB',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
 
             if ($request->file('avatar')) {
                 $validate['avatar'] = $request->file('avatar')->store('img', 'public');
-                if ($user->avatar) {
+                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
                     Storage::disk('public')->delete($user->avatar);
                 }
             }
@@ -153,10 +157,22 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
+        DB::beginTransaction();
+
+        try {
+            $avatar = $user->avatar;
+            
+            $user->delete();
+
+            if ($avatar && Storage::disk('public')->exists($avatar)) {
+                Storage::disk('public')->delete($avatar);
+            }
+
+            DB::commit();
+            return to_route('user.index')->withSuccess('Data berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return to_route('user.index')->withError('Gagal menghapus data: ' . $e->getMessage());
         }
-        return to_route('user.index')->withSuccess('Data berhasil dihapus');
     }
 }

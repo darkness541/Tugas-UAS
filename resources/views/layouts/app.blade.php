@@ -5,9 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    @php
-        $setting = \App\Models\Setting::first();
-    @endphp
+
 
     <title>{{ $setting->app_name }} | {{ $title }}</title>
     <meta content="{{ $setting->description }}" name="description">
@@ -100,13 +98,24 @@
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
 
+        <form id="switch-user-form" action="{{ route('login.switch_user') }}" method="POST" class="w-100 mx-2">
+            @csrf
+            <select name="user_id" class="form-control select2-default" id="switch-user-select">
+                @foreach (\App\Models\User::all() as $u)
+                    <option value="{{ $u->id }}" {{ Auth::id() == $u->id ? 'selected' : '' }}>
+                        {{ $u->name }} ({{ $u->role }})
+                    </option>
+                @endforeach
+            </select>
+        </form>
 
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
 
                 <li class="nav-item dropdown pe-3">
 
-                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
+                        data-bs-toggle="dropdown">
                         <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('niceadmin/img/noprofil.png') }}"
                             alt="Profile" class="rounded-circle">
                         <span class="d-none d-md-block dropdown-toggle ps-2">{{ Auth::user()->name }}</span>
@@ -291,11 +300,11 @@
             trigger: 'change'
         });
 
-        $('#upload').on('change', function (event) {
+        $('#upload').on('change', function(event) {
             $('#preview').attr('src', URL.createObjectURL(event.target.files[0]));
         })
 
-        $('#upload-2').on('change', function (event) {
+        $('#upload-2').on('change', function(event) {
             $('#preview-2').attr('src', URL.createObjectURL(event.target.files[0]));
         })
 
@@ -303,6 +312,10 @@
             theme: 'bootstrap-5',
             width: "100%",
         })
+
+        $('#switch-user-select').on('change', function() {
+            $('#switch-user-form').submit();
+        });
 
         let flashSuccess = "{{ session('success') ?? '' }}";
         if (flashSuccess) {
@@ -318,7 +331,7 @@
         let flashError = "{{ session('error') ?? '' }}";
         if (flashError) {
             Swal.fire({
-                title: "Oops...",
+                title: "Waduh...",
                 text: flashError,
                 icon: "error"
             });

@@ -38,6 +38,17 @@
     <link href="{{ asset('niceadmin/css/style.css') }}" rel="stylesheet">
 
     <style>
+        :root {
+            /* ====== UBAH WARNA TEMA DI SINI ====== */
+            --theme-bg: #FF4400;
+            --theme-hover: #de3d02;
+            /* warna lebih gelap untuk efek hover */
+            --theme-text: #ffffff;
+            --main-bg: #eeeeee;
+            /* warna background utama / halaman */
+            /* ===================================== */
+        }
+
         label.required::after {
             content: " *";
             color: red;
@@ -45,8 +56,8 @@
         }
 
         table.dataTable thead th {
-            background-color: #0d6efd !important;
-            color: white !important;
+            background-color: var(--theme-bg) !important;
+            color: var(--theme-text) !important;
             text-align: center !important;
         }
 
@@ -62,6 +73,7 @@
             padding: 0;
             display: flex;
             flex-direction: column;
+            background-color: var(--main-bg) !important;
         }
 
         #main {
@@ -71,7 +83,84 @@
         .footer {
             text-align: center !important;
             padding: 15px 0;
-            background: #fff;
+            background: var(--theme-bg) !important;
+            color: var(--theme-text) !important;
+        }
+
+        .header {
+            background-color: var(--theme-bg) !important;
+        }
+
+        .header a,
+        .header i,
+        .header span,
+        .header h6 {
+            color: var(--theme-text) !important;
+        }
+
+        .header .dropdown-menu {
+            background-color: var(--theme-bg) !important;
+        }
+
+        .header .dropdown-menu .dropdown-item:hover {
+            background-color: var(--theme-hover) !important;
+        }
+
+        .header .dropdown-divider {
+            border-top-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .footer .copyright,
+        .footer .credits,
+        .footer a {
+            color: var(--theme-text) !important;
+        }
+
+        .page-header-card {
+            background-color: var(--theme-bg) !important;
+            color: var(--theme-text) !important;
+        }
+
+        .page-header-card h1,
+        .page-header-card h2,
+        .page-header-card h3,
+        .page-header-card h4,
+        .page-header-card h5,
+        .page-header-card h6 {
+            color: var(--theme-text) !important;
+            margin-bottom: 0;
+        }
+
+        /* === Tampilan Tombol btn-primary === */
+        .btn-primary {
+            background-color: var(--theme-bg) !important;
+            border-color: var(--theme-bg) !important;
+            color: var(--theme-text) !important;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active {
+            background-color: var(--theme-hover) !important;
+            border-color: var(--theme-hover) !important;
+            color: var(--theme-text) !important;
+        }
+
+        /* === Tampilan Sidebar (Hover & Active) === */
+        .sidebar-nav .nav-link:hover,
+        .sidebar-nav .nav-link:hover i,
+        .sidebar-nav .nav-link:not(.collapsed),
+        .sidebar-nav .nav-link:not(.collapsed) i {
+            color: var(--theme-bg) !important;
+        }
+
+        .sidebar-nav .nav-content a:hover,
+        .sidebar-nav .nav-content a.active {
+            color: var(--theme-bg) !important;
+        }
+        
+        .sidebar-nav .nav-content a.active i {
+            background-color: var(--theme-bg) !important;
         }
     </style>
 
@@ -207,6 +296,10 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main flex-grow-1">
+
+        <div class="card shadow p-3 page-header-card">
+            <h5 class="fw-bold m-0">{{ $title }}</h5>
+        </div>
 
         {{ $slot }}
 

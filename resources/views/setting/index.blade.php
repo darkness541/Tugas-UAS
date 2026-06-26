@@ -2,11 +2,7 @@
 
     <x-slot:title>{{ $title }}</x-slot:title>
 
-    <div class="card shadow p-3">
-        <h5 class="fw-bold">{{ $title }}</h5>
-    </div>
-
-    <div class="card shadow p-3">
+    <div class="card shadow-lg p-3">
 
         <form action="{{ route('setting.update', $setting) }}" method="post" enctype="multipart/form-data" class="form">
             @csrf

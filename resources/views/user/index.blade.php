@@ -2,11 +2,9 @@
 
     <x-slot:title>{{ $title }}</x-slot:title>
 
-    <div class="card shadow p-3">
-        <h5 class="fw-bold">{{ $title }}</h5>
-    </div>
 
-    <div class="card shadow p-3">
+
+    <div class="card shadow-lg p-3">
 
         <div class="mb-3">
             <a class="btn btn-primary" href="{{ route('user.create') }}" role="button">Tambah</a>
@@ -73,11 +71,11 @@
 
     @push('scripts')
         <script>
-            $('#data-table').on('click', '.btn-delete', function () {
+            $('#data-table').on('click', '.btn-delete', function() {
                 $('#form-delete').attr('action', $(this).data('route'))
             })
 
-            $('#data-table').on('click', '.btn-detail', function () {
+            $('#data-table').on('click', '.btn-detail', function() {
                 Swal.fire({
                     title: 'Memuat...',
                     text: 'Mohon tunggu sebentar',
@@ -87,7 +85,7 @@
                     }
                 });
 
-                $('#modal-detail').load($(this).data('route'), function (response, status, xhr) {
+                $('#modal-detail').load($(this).data('route'), function(response, status, xhr) {
                     if (status == "success") {
                         setTimeout(() => {
                             Swal.close();

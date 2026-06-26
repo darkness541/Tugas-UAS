@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-
-
     <title>{{ $setting->app_name }} | {{ $title }}</title>
     <meta content="{{ $setting->description }}" name="description">
     <meta content="{{ $setting->keywords }}" name="keywords">

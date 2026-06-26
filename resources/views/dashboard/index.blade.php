@@ -2,11 +2,6 @@
 
     <x-slot:title>{{ $title }}</x-slot:title>
 
-
-    <div class="card shadow p-3 mb-4">
-        <h5 class="fw-bold">{{ $title }}</h5>
-    </div>
-
     <!-- Welcome Card -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body p-4">

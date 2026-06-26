@@ -16,6 +16,27 @@ A professional and modern administrative dashboard template built with **Laravel
 - **Ekspor Laporan**: Dukungan ekspor data ke format PDF (menggunakan `laravel-dompdf`).
 - **Lokalisasi**: Sudah dikonfigurasi menggunakan Bahasa Indonesia (`id`).
 
+## 🎨 Kustomisasi Tema (Warna)
+
+Template ini telah dimodifikasi agar warna tema utamanya sangat mudah diganti. Anda hanya perlu mengubah **CSS Variables** di satu tempat saja, dan seluruh elemen (Header, Footer, Tombol Primary, Sidebar Aktif, dll.) akan otomatis menyesuaikan.
+
+1. Buka file `resources/views/layouts/app.blade.php`.
+2. Cari bagian `<style>` di dalam tag `<head>`.
+3. Ubah kode Hex warna pada blok `:root`:
+
+```css
+:root {
+    /* ====== UBAH WARNA TEMA DI SINI ====== */
+    --theme-bg: #7c3aed;    /* Warna utama tema (contoh: Ungu/Biru) */
+    --theme-hover: #6d28d9; /* Warna lebih gelap untuk efek hover tombol/menu */
+    --theme-text: #ffffff;  /* Warna teks di atas warna utama */
+    
+    --main-bg: #f6f9ff;     /* Warna background utama halaman konten */
+    /* ===================================== */
+}
+```
+4. Simpan file, lalu muat ulang (refresh) halaman pada browser Anda.
+
 ## 🔑 Kredensial Default
 
 Setelah menjalankan seeder, Anda dapat login menggunakan akun berikut:

@@ -162,6 +162,10 @@
         .sidebar-nav .nav-content a.active i {
             background-color: var(--theme-bg) !important;
         }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            color: #212529 !important;
+        }
     </style>
 
     <!-- =======================================================

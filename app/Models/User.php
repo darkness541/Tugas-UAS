@@ -30,3 +30,6 @@ class User extends Authenticatable
         ];
     }
 }
+
+## Update
+Perubahan pada tanggal 2026-07-18.

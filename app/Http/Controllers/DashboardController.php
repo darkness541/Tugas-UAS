@@ -2,24 +2,91 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Item;
+use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalUsers = \App\Models\User::count();
-        $superadminCount = \App\Models\User::whereHas('role', function($q) { $q->where('name', 'Superadmin'); })->count();
-        $adminCount = \App\Models\User::whereHas('role', function($q) { $q->where('name', 'Admin'); })->count();
+        $user = auth()->user();
+
+        // User stats
+        $totalUsers = User::count();
+        $superadminCount = User::whereHas('role', function ($query) {
+            $query->where('name', 'Superadmin');
+        })->count();
+        $adminCount = User::whereHas('role', function ($query) {
+            $query->where('name', 'Admin');
+        })->count();
+
+        // Inventory Analytics
+        $totalItems = Item::count();
+        
+        // Calculate Total Valuation
+        $totalValuation = Item::select(DB::raw('SUM(current_stock * price) as total'))->value('total') ?? 0;
+        
+        // Low Stock Items (taking up to 10 for dashboard preview)
+        $lowStockItems = Item::whereColumn('current_stock', '<=', 'minimum_stock')
+                            ->orderBy('current_stock', 'asc')
+                            ->take(10)
+                            ->get();
+
+        // Transactions Chart Data (Last 30 Days)
+        $startDate = Carbon::now()->subDays(29)->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+        
+        $transactions = Transaction::select(
+                DB::raw('DATE(transaction_date) as date'),
+                'type',
+                DB::raw('COUNT(*) as count'),
+                DB::raw('SUM(quantity) as total_quantity')
+            )
+            ->whereBetween('transaction_date', [$startDate, $endDate])
+            ->groupBy('date', 'type')
+            ->orderBy('date', 'asc')
+            ->get();
+            
+        // Formatting chart data for ApexCharts
+        $dates = collect();
+        for ($i = 0; $i < 30; $i++) {
+            $dates->push(Carbon::now()->subDays(29 - $i)->format('Y-m-d'));
+        }
+        
+        $chartDataIn = [];
+        $chartDataOut = [];
+        
+        foreach ($dates as $date) {
+            // Find IN transactions for this date
+            $in = $transactions->where('date', $date)->where('type', 'in')->first();
+            $chartDataIn[] = $in ? (int) $in->total_quantity : 0;
+            
+            // Find OUT transactions for this date
+            $out = $transactions->where('date', $date)->where('type', 'out')->first();
+            $chartDataOut[] = $out ? (int) $out->total_quantity : 0;
+        }
 
         return view('dashboard.index', [
             'title' => 'Dashboard',
+            'user' => $user,
             'totalUsers' => $totalUsers,
             'superadminCount' => $superadminCount,
             'adminCount' => $adminCount,
+            
+            'totalItems' => $totalItems,
+            'totalValuation' => $totalValuation,
+            'lowStockItems' => $lowStockItems,
+            
+            'chartDates' => $dates->map(fn($date) => Carbon::parse($date)->format('d/m'))->toArray(),
+            'chartDataIn' => $chartDataIn,
+            'chartDataOut' => $chartDataOut,
         ]);
     }
 

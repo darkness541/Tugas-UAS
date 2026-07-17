@@ -3,216 +3,236 @@
     <x-slot:title>{{ $title }}</x-slot:title>
 
     <!-- Welcome Card -->
-    <div class="card shadow-sm border-0 mb-4">
+    <div class="card shadow-sm border-0 mb-4 bg-primary text-white" style="background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);">
         <div class="card-body p-4">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h3 class="fw-bold mb-3">
-                        <i class='bx bx-smile text-primary me-2'></i>
-                        Selamat Datang, {{ Auth::user()->name }}!
+                        <i class='bx bx-pie-chart-alt-2 me-2'></i>
+                        Dashboard Inventaris
                     </h3>
-                    <p class="text-muted mb-0">
-                        Anda login sebagai <span class="badge bg-primary">{{ Auth::user()->role->name ?? '-' }}</span>
+                    <p class="mb-0 fs-5">
+                        Ringkasan performa stok barang dan nilai valuasi gudang Anda saat ini.
                     </p>
-                    <p class="text-muted mt-2">
+                    <p class="mt-2 opacity-75 small">
                         <i class='bx bx-time-five me-1'></i>
-                        {{ now()->isoFormat('dddd, D MMMM YYYY - HH:mm') }}
+                        Pembaruan Terakhir: {{ now()->isoFormat('dddd, D MMMM YYYY - HH:mm') }}
                     </p>
                 </div>
-                <div class="col-md-4 text-center">
-                    <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('niceadmin/img/noprofil.png') }}"
-                        alt="Avatar" class="img-fluid rounded-circle border border-3 border-primary"
-                        style="max-width: 150px;">
+                <div class="col-md-4 text-end d-none d-md-block">
+                    <i class='bx bx-buildings' style="font-size: 6rem; opacity: 0.3;"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- Inventory Statistics Cards -->
     <div class="row g-4 mb-4">
+        <!-- Total Items -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card shadow-sm border-0 h-100 border-start border-primary border-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <p class="text-muted mb-1 small">Total Users</p>
-                            <h2 class="fw-bold mb-0">{{ $totalUsers }}</h2>
+                            <p class="text-muted mb-1 small text-uppercase fw-bold">Total Barang (Item)</p>
+                            <h2 class="fw-bold mb-0 text-primary">{{ number_format($totalItems, 0, ',', '.') }}</h2>
                         </div>
                         <div class="bg-primary bg-opacity-10 rounded-circle p-3">
-                            <i class='bx bx-user fs-2 text-primary'></i>
+                            <i class='bx bx-box fs-1 text-primary'></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-primary bg-opacity-10 border-0 py-2">
-                    <small class="text-primary fw-semibold">
-                        <i class='bx bx-trending-up me-1'></i>
-                        All registered users
-                    </small>
+                <div class="card-footer bg-white border-top-0 py-3">
+                    <a href="{{ route('item.index') }}" class="text-primary text-decoration-none small fw-semibold">
+                        Lihat Data Barang <i class='bx bx-right-arrow-alt'></i>
+                    </a>
                 </div>
             </div>
         </div>
 
+        <!-- Total Valuation -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card shadow-sm border-0 h-100 border-start border-success border-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <p class="text-muted mb-1 small">Superadmin</p>
-                            <h2 class="fw-bold mb-0">{{ $superadminCount }}</h2>
+                            <p class="text-muted mb-1 small text-uppercase fw-bold">Total Valuasi Stok</p>
+                            <h3 class="fw-bold mb-0 text-success">Rp {{ number_format($totalValuation, 0, ',', '.') }}</h3>
                         </div>
                         <div class="bg-success bg-opacity-10 rounded-circle p-3">
-                            <i class='bx bx-shield fs-2 text-success'></i>
+                            <i class='bx bx-wallet fs-1 text-success'></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-success bg-opacity-10 border-0 py-2">
-                    <small class="text-success fw-semibold">
-                        <i class='bx bx-check-circle me-1'></i>
-                        Full access users
+                <div class="card-footer bg-white border-top-0 py-3">
+                    <small class="text-muted fw-semibold">
+                        *Estimasi nilai seluruh barang di gudang.
                     </small>
                 </div>
             </div>
         </div>
 
+        <!-- Low Stock Alert -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card shadow-sm border-0 h-100 border-start border-danger border-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
-                            <p class="text-muted mb-1 small">Admin</p>
-                            <h2 class="fw-bold mb-0">{{ $adminCount }}</h2>
+                            <p class="text-muted mb-1 small text-uppercase fw-bold">Peringatan Stok Menipis</p>
+                            <h2 class="fw-bold mb-0 text-danger">{{ $lowStockItems->count() }} <span class="fs-6 text-muted fw-normal">Barang</span></h2>
                         </div>
-                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
-                            <i class='bx bx-user-check fs-2 text-info'></i>
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                            <i class='bx bx-error-circle fs-1 text-danger'></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-info bg-opacity-10 border-0 py-2">
-                    <small class="text-info fw-semibold">
-                        <i class='bx bx-user-circle me-1'></i>
-                        Standard access users
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-white border-bottom">
-            <h5 class="mb-0 fw-bold">
-                <i class='bx bx-rocket me-2 text-primary'></i>
-                Quick Actions
-            </h5>
-        </div>
-        <div class="card-body">
-            <div class="row g-3 mt-2">
-                <div class="col-md-3">
-                    <a href="{{ route('user.index') }}" class="text-decoration-none">
-                        <div class="card border border-primary border-opacity-25 h-100 hover-shadow">
-                            <div class="card-body text-center mt-4">
-                                <i class='bx bx-user-plus fs-1 text-primary mb-2'></i>
-                                <h6 class="mb-0">Manage Users</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="{{ route('setting.index') }}" class="text-decoration-none">
-                        <div class="card border border-success border-opacity-25 h-100 hover-shadow">
-                            <div class="card-body text-center mt-4"">
-                                <i class='bx bx-cog fs-1 text-success mb-2'></i>
-                                <h6 class=" mb-0">Settings</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="{{ route('dashboard.show') }}" class="text-decoration-none">
-                        <div class="card border border-info border-opacity-25 h-100 hover-shadow">
-                            <div class="card-body text-center mt-4"">
-                                <i class='bx bx-user-circle fs-1 text-info mb-2'></i>
-                                <h6 class=" mb-0">My Profile</h6>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="{{ route('dashboard.edit') }}" class="text-decoration-none">
-                        <div class="card border border-warning border-opacity-25 h-100 hover-shadow">
-                            <div class="card-body text-center mt-4"">
-                                <i class='bx bx-edit fs-1 text-warning mb-2'></i>
-                                <h6 class=" mb-0">Edit Profile</h6>
-                            </div>
-                        </div>
+                <div class="card-footer bg-white border-top-0 py-3">
+                    <a href="#lowStockTable" class="text-danger text-decoration-none small fw-semibold">
+                        Lihat Detail Peringatan <i class='bx bx-down-arrow-alt'></i>
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- System Information -->
-    <div class="row g-3">
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white border-bottom">
+    <div class="row g-4 mb-4">
+        <!-- Main Chart -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 fw-bold">
-                        <i class='bx bx-info-circle me-2 text-primary'></i>
-                        System Information
+                        <i class='bx bx-line-chart me-2 text-primary'></i>
+                        Tren Transaksi (30 Hari Terakhir)
                     </h6>
+                    <span class="badge bg-light text-dark border">Kuantitas Barang</span>
                 </div>
                 <div class="card-body">
-                    <ul class="list-unstyled mb-0 pt-4">
-                        <li class="mb-2">
-                            <i class='bx bx-check-circle text-success me-2'></i>
-                            <strong>Laravel Version:</strong> {{ app()->version() }}
-                        </li>
-                        <li class="mb-2">
-                            <i class='bx bx-check-circle text-success me-2'></i>
-                            <strong>PHP Version:</strong> {{ PHP_VERSION }}
-                        </li>
-                        <li class="mb-2">
-                            <i class='bx bx-check-circle text-success me-2'></i>
-                            <strong>Environment:</strong> {{ config('app.env') }}
-                        </li>
-                    </ul>
+                    <div id="transactionsChart" style="min-height: 350px;"></div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 pt-4">
-                <div class="card-header bg-white border-bottom">
-                    <h6 class="mb-0 fw-bold">
-                        <i class='bx bx-user me-2 text-primary'></i>
-                        Your Account
+        <!-- Low Stock Table -->
+        <div class="col-lg-4" id="lowStockTable">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h6 class="mb-0 fw-bold text-danger">
+                        <i class='bx bx-error me-2'></i>
+                        Barang Kritis (Butuh Restock)
                     </h6>
                 </div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2">
-                            <i class='bx bx-envelope text-primary me-2'></i>
-                            <strong>Email:</strong> {{ Auth::user()->email }}
-                        </li>
-                        <li class="mb-2">
-                            <i class='bx bx-calendar text-primary me-2'></i>
-                            <strong>Member Since:</strong> {{ Auth::user()->created_at->format('d M Y') }}
-                        </li>
-                        <li class="mb-2">
-                            <i class='bx bx-time text-primary me-2'></i>
-                            <strong>Last Updated:</strong> {{ Auth::user()->updated_at->diffForHumans() }}
-                        </li>
-                    </ul>
+                <div class="card-body p-0">
+                    @if($lowStockItems->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Barang</th>
+                                        <th class="text-center">Sisa Stok</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($lowStockItems as $item)
+                                        <tr>
+                                            <td class="ps-3">
+                                                <div class="fw-bold text-dark">{{ Str::limit($item->name, 20) }}</div>
+                                                <div class="small text-muted">{{ $item->sku }}</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger rounded-pill px-3 py-2">
+                                                    {{ $item->current_stock }} / {{ $item->minimum_stock }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-5">
+                            <i class='bx bx-check-shield text-success' style="font-size: 4rem;"></i>
+                            <h6 class="mt-3 text-muted">Semua stok aman!</h6>
+                        </div>
+                    @endif
+                </div>
+                <div class="card-footer bg-white border-top text-center py-3">
+                    <a href="{{ route('item.index') }}" class="btn btn-sm btn-outline-primary">Kelola Barang</a>
                 </div>
             </div>
         </div>
     </div>
 
-
-    @push('modals')
-    @endpush
 
     @push('scripts')
+    <!-- ApexCharts is included globally in app.blade.php as per niceadmin theme -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            var chartDates = {!! json_encode($chartDates) !!};
+            var chartDataIn = {!! json_encode($chartDataIn) !!};
+            var chartDataOut = {!! json_encode($chartDataOut) !!};
+
+            new ApexCharts(document.querySelector("#transactionsChart"), {
+                series: [{
+                    name: 'Barang Masuk (IN)',
+                    data: chartDataIn
+                }, {
+                    name: 'Barang Keluar (OUT)',
+                    data: chartDataOut
+                }],
+                chart: {
+                    height: 350,
+                    type: 'area',
+                    toolbar: {
+                        show: false
+                    },
+                    fontFamily: 'Nunito, sans-serif'
+                },
+                markers: {
+                    size: 4
+                },
+                colors: ['#198754', '#dc3545'],
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.3,
+                        opacityTo: 0.05,
+                        stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2
+                },
+                xaxis: {
+                    categories: chartDates,
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Kuantitas (Pcs)'
+                    }
+                },
+                tooltip: {
+                    shared: true,
+                    intersect: false,
+                    y: {
+                        formatter: function (y) {
+                            if (typeof y !== "undefined") {
+                                return y.toFixed(0) + " pcs";
+                            }
+                            return y;
+                        }
+                    }
+                }
+            }).render();
+        });
+    </script>
     @endpush
 
 </x-app>

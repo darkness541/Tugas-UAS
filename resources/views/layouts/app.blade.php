@@ -330,6 +330,18 @@
                 </a>
             </li>
 
+            @if (Auth::user()->role->name == 'Superadmin' || Auth::user()->role->name == 'Admin' || Auth::user()->role->name == 'Manajer')
+                <li class="nav-heading">Laporan & Analitik</li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('report.*') ? '' : 'collapsed' }}"
+                        href="{{ route('report.index') }}">
+                        <i class="bi bi-file-earmark-bar-graph"></i>
+                        <span>Laporan Stok</span>
+                    </a>
+                </li>
+            @endif
+
 
         </ul>
 

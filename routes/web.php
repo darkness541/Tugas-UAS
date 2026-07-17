@@ -30,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/item', \App\Http\Controllers\ItemController::class)->middleware('role:Superadmin,Admin');
     Route::resource('/transaction', \App\Http\Controllers\TransactionController::class)->only(['index', 'create', 'store', 'show'])->middleware('role:Superadmin,Admin,Manajer,Staf Gudang');
 
+    Route::get('/report', [\App\Http\Controllers\ReportController::class, 'index'])->name('report.index')->middleware('role:Superadmin,Admin,Manajer');
+    Route::get('/report/print', [\App\Http\Controllers\ReportController::class, 'print'])->name('report.print')->middleware('role:Superadmin,Admin,Manajer');
+
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
     Route::put('/setting/{setting}/update', [SettingController::class, 'update'])->name('setting.update');
 });

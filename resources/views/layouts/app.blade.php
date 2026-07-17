@@ -314,11 +314,21 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('user.*') ? '' : 'collapsed' }}"
                         href="{{ route('user.index') }}">
-                        <i class='bx bx-user-pin'></i>
-                        <span>User</span>
+                        <i class="bi bi-person-lines-fill"></i>
+                        <span>Manajemen User</span>
                     </a>
                 </li>
             @endif
+
+            <li class="nav-heading">Mutasi Stok</li>
+            
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('transaction.*') ? '' : 'collapsed' }}"
+                    href="{{ route('transaction.index') }}">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Riwayat Transaksi</span>
+                </a>
+            </li>
 
 
         </ul>

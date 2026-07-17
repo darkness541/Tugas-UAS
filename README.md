@@ -115,3 +115,6 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek di mesin lokal Anda:
 ## 📄 Lisensi
 
 Proyek ini bersifat open-source di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
+
+## Update
+Perubahan pada tanggal 2026-07-17.

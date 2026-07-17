@@ -17,7 +17,7 @@ class EnsureHasRole
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         foreach ($roles as $role) {
-            if (Auth::user()->role == $role) {
+            if (Auth::user()->role->name == $role) {
                 return $next($request);
             }
         }

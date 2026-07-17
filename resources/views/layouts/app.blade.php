@@ -196,7 +196,7 @@
             <select name="user_id" class="form-control select2-default" id="switch-user-select">
                 @foreach (\App\Models\User::all() as $u)
                     <option value="{{ $u->id }}" {{ Auth::id() == $u->id ? 'selected' : '' }}>
-                        {{ $u->name }} ({{ $u->role }})
+                        {{ $u->name }} ({{ $u->role->name ?? '-' }})
                     </option>
                 @endforeach
             </select>
@@ -217,7 +217,7 @@
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>{{ Auth::user()->name }}</h6>
-                            <span>{{ Auth::user()->role }}</span>
+                            <span>{{ Auth::user()->role->name ?? '-' }}</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -284,7 +284,33 @@
                 </a>
             </li>
 
-            @if (Auth::user()->role == 'Superadmin')
+            @if (Auth::user()->role->name == 'Superadmin' || Auth::user()->role->name == 'Admin')
+                <li class="nav-heading">Master Data</li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('category.*') ? '' : 'collapsed' }}"
+                        href="{{ route('category.index') }}">
+                        <i class="bi bi-tags"></i>
+                        <span>Kategori Barang</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('supplier.*') ? '' : 'collapsed' }}"
+                        href="{{ route('supplier.index') }}">
+                        <i class="bi bi-truck"></i>
+                        <span>Supplier</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('item.*') ? '' : 'collapsed' }}"
+                        href="{{ route('item.index') }}">
+                        <i class="bi bi-box-seam"></i>
+                        <span>Barang (Items)</span>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('user.*') ? '' : 'collapsed' }}"
                         href="{{ route('user.index') }}">

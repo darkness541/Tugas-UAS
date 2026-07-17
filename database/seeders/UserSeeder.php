@@ -17,12 +17,12 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Tamus Tahir',
                 'email' => 'tamus@gmail.com',
-                'role' => 'Superadmin',
+                'role_id' => 1, // Superadmin
             ],
             [
                 'name' => 'Joh Doe',
                 'email' => 'admin@gmail.com',
-                'role' => 'Admin',
+                'role_id' => 2, // Admin
             ],
         ];
 
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
             User::factory()->create([
                 'name' => $user['name'],
                 'email' => $user['email'],
-                'role' => $user['role'],
+                'role_id' => $user['role_id'],
             ]);
         }
     }

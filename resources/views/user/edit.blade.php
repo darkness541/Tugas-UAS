@@ -68,14 +68,15 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="role" class="form-label required">Role</label>
-                        <select class="form-select select2-default @error('role') is-invalid  @enderror" id="role"
-                            name="role" required>
+                        <label for="role_id" class="form-label required">Role</label>
+                        <select class="form-select select2-default @error('role_id') is-invalid  @enderror" id="role_id"
+                            name="role_id" required>
                             <option value="">Pilih Role</option>
-                            <option value="Superadmin" @selected(old('role', $user->role) == 'Superadmin')>Superadmin</option>
-                            <option value="Admin" @selected(old('role', $user->role) == 'Admin')>Admin</option>
+                            @foreach($roles as $roleItem)
+                                <option value="{{ $roleItem->id }}" @selected(old('role_id', $user->role_id) == $roleItem->id)>{{ $roleItem->name }}</option>
+                            @endforeach
                         </select>
-                        @error('role')
+                        @error('role_id')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>

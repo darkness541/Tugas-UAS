@@ -2,42 +2,38 @@
 
     <x-slot:title>{{ $title }}</x-slot:title>
 
-
-
     <div class="card shadow-lg p-3">
 
         <div class="mb-3">
-            <a class="btn btn-primary" href="{{ route('user.create') }}" role="button">Tambah</a>
+            <a class="btn btn-primary" href="{{ route('category.create') }}" role="button">Tambah Kategori</a>
         </div>
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped w-100" id="data-table">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" width="5%">#</th>
+                        <th scope="col">Nama Kategori</th>
+                        <th scope="col">Deskripsi</th>
+                        <th scope="col" width="15%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
+                    @foreach ($categories as $category)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->role->name ?? '-' }}</td>
+                            <td>{{ $category->name }}</td>
+                            <td>{{ Str::limit($category->description, 50) }}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm btn-detail"
-                                    data-route="{{ route('user.show', $user) }}">
+                                    data-route="{{ route('category.show', $category) }}">
                                     <i class='bx bx-show'></i>
                                 </button>
-                                <a href="{{ route('user.edit', $user) }}" class="btn btn-warning btn-sm">
+                                <a href="{{ route('category.edit', $category) }}" class="btn btn-warning btn-sm">
                                     <i class='bx bx-edit-alt'></i>
                                 </a>
                                 <button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal" data-route="{{ route('user.destroy', $user) }}">
+                                    data-bs-target="#deleteModal" data-route="{{ route('category.destroy', $category) }}">
                                     <i class='bx bx-trash'></i>
                                 </button>
                             </td>
@@ -52,10 +48,10 @@
 
     @push('modals')
         <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Detail User</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Kategori</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modal-detail">

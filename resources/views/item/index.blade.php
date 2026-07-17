@@ -2,42 +2,61 @@
 
     <x-slot:title>{{ $title }}</x-slot:title>
 
-
-
     <div class="card shadow-lg p-3">
 
-        <div class="mb-3">
-            <a class="btn btn-primary" href="{{ route('user.create') }}" role="button">Tambah</a>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <a class="btn btn-primary" href="{{ route('item.create') }}" role="button">Tambah Barang</a>
+            </div>
+            <div class="col-md-6">
+                <form action="{{ route('item.index') }}" method="GET" class="d-flex justify-content-end">
+                    <select name="category_id" class="form-select w-auto me-2" onchange="this.form.submit()">
+                        <option value="">-- Semua Kategori --</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ $selected_category == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
         </div>
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped w-100" id="data-table">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" width="5%">#</th>
+                        <th scope="col">SKU</th>
+                        <th scope="col">Nama Barang</th>
+                        <th scope="col">Kategori</th>
+                        <th scope="col">Harga</th>
+                        <th scope="col">Stok</th>
+                        <th scope="col" width="15%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
-                        <tr>
+                    @foreach ($items as $item)
+                        <tr class="{{ $item->current_stock <= $item->minimum_stock ? 'table-danger' : '' }}">
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->role->name ?? '-' }}</td>
+                            <td>{{ $item->sku }}</td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->category->name ?? '-' }}</td>
+                            <td>Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                            <td>
+                                {{ $item->current_stock }}
+                                @if($item->current_stock <= $item->minimum_stock)
+                                    <span class="badge bg-danger ms-1">Low</span>
+                                @endif
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm btn-detail"
-                                    data-route="{{ route('user.show', $user) }}">
+                                    data-route="{{ route('item.show', $item) }}">
                                     <i class='bx bx-show'></i>
                                 </button>
-                                <a href="{{ route('user.edit', $user) }}" class="btn btn-warning btn-sm">
+                                <a href="{{ route('item.edit', $item) }}" class="btn btn-warning btn-sm">
                                     <i class='bx bx-edit-alt'></i>
                                 </a>
                                 <button type="button" class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal"
-                                    data-bs-target="#deleteModal" data-route="{{ route('user.destroy', $user) }}">
+                                    data-bs-target="#deleteModal" data-route="{{ route('item.destroy', $item) }}">
                                     <i class='bx bx-trash'></i>
                                 </button>
                             </td>
@@ -52,10 +71,10 @@
 
     @push('modals')
         <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Detail User</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Barang</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modal-detail">
